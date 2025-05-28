@@ -152,14 +152,14 @@ int main(int argc, char *argv[]){
     }
   ALLEGRO_BITMAP* fundo = al_load_bitmap("./assets/background.png");
   al_clear_to_color(al_map_rgb(0, 0, 0));   
-  al_draw_scaled_bitmap(fundo, 0, 0, al_get_bitmap_width(fundo), al_get_bitmap_height(fundo), 800, 600, width, height, 0);
+  al_draw_scaled_bitmap(fundo, 0, 0, 320, 200, 0, 0, 640, 480, 0);
   al_flip_display();
 while(true){
 
     ALLEGRO_EVENT event;
     al_wait_for_event(queue, &event);
     
-    if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
+    if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){ 
       break;
     }
     else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
@@ -181,8 +181,11 @@ while(true){
       if (sprite_y > height - al_get_bitmap_height(sprite)) 
           sprite_y = height - al_get_bitmap_height(sprite);
 
-      al_clear_to_color(al_map_rgb(255, 255, 255));
-      al_draw_bitmap(fundo, 0, 0, 0);
+      //al_clear_to_color(al_map_rgb(255, 255, 255));
+      //al_draw_bitmap(fundo, 0, 0, 0);
+      al_clear_to_color(al_map_rgb(0, 0, 0));   
+      al_draw_scaled_bitmap(fundo, 0, 0, 400, 246, 0, 0, 800, 600, 0);
+
       
       double tempo_atual = al_get_time() - init_time;
       char tempo_texto[32];
