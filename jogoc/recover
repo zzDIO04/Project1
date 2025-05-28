@@ -139,9 +139,9 @@ int main(int argc, char *argv[]){
   ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
   al_register_event_source(queue, al_get_display_event_source(display));
   al_register_event_source(queue, al_get_keyboard_event_source());
-  ALLEGRO_FONT* font = al_create_builtin_font();
-  bool teclas[ALLEGRO_KEY_MAX] = { false };
+  ALLEGRO_FONT* font = al_create_builtin_font(); 
   mainmenu(display, font, queue);
+  bool teclas[ALLEGRO_KEY_MAX] = { false };
   ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
   al_register_event_source(queue, al_get_timer_event_source(timer));
   al_start_timer(timer);
@@ -151,39 +151,22 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);; 
     }
   ALLEGRO_BITMAP* fundo = al_load_bitmap("./assets/background.png");
-  al_clear_to_color(al_map_rgb(0, 0, 0));   
-  al_draw_scaled_bitmap(fundo, 0, 0, al_get_bitmap_width(fundo), al_get_bitmap_height(fundo), 800, 600, width, height, 0);
-  al_flip_display();
-while(true){
 
+  while(true){
     ALLEGRO_EVENT event;
     al_wait_for_event(queue, &event);
     
     if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
       break;
     }
-    else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-      teclas[event.keyboard.keycode] = true;  
-    }
-    else if (event.type == ALLEGRO_EVENT_KEY_UP) {
-      teclas[event.keyboard.keycode] = false; 
-    }
     else if (event.type == ALLEGRO_EVENT_TIMER) {
       if (teclas[ALLEGRO_KEY_UP]) sprite_y -= velocidade;
       if (teclas[ALLEGRO_KEY_DOWN]) sprite_y += velocidade;
       if (teclas[ALLEGRO_KEY_LEFT]) sprite_x -= velocidade;
       if (teclas[ALLEGRO_KEY_RIGHT]) sprite_x += velocidade;
-      
-      if (sprite_x < 0) sprite_x = 0;
-      if (sprite_y < 0) sprite_y = 0;
-      if (sprite_x > width - al_get_bitmap_width(sprite)) 
-          sprite_x = width - al_get_bitmap_width(sprite);
-      if (sprite_y > height - al_get_bitmap_height(sprite)) 
-          sprite_y = height - al_get_bitmap_height(sprite);
-
       al_clear_to_color(al_map_rgb(255, 255, 255));
-      al_draw_bitmap(fundo, 0, 0, 0);
-      
+      ALLEGRO_BITMAP* background = fundo;
+      al_draw_bitmap(background, 0, 0, 0);
       double tempo_atual = al_get_time() - init_time;
       char tempo_texto[32];
       snprintf(tempo_texto, sizeof(tempo_texto), "Tempo: %.1f s", tempo_atual);
@@ -193,7 +176,8 @@ while(true){
       
       al_flip_display();
     }
-  }  al_destroy_bitmap(fundo);
+  }
+  al_destroy_bitmap(fundo);
   al_destroy_bitmap(sprite);
   al_destroy_font(font);
   al_destroy_display(display);
