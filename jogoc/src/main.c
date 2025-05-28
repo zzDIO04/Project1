@@ -5,6 +5,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5/mouse.h>
+#include <allegro5/mouse_cursor.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -53,7 +55,7 @@ bool init_func(){
   al_init_image_addon();
   al_init_font_addon();
   al_init_ttf_addon();
-  
+  al_install_mouse();  
   return true;
 }
 
@@ -142,7 +144,7 @@ int main(int argc, char *argv[]){
   ALLEGRO_FONT* font = al_create_builtin_font();
   bool teclas[ALLEGRO_KEY_MAX] = { false };
   mainmenu(display, font, queue);
-  ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
+  ALLEGRO_TIMER* timer = al_create_timer(1.0 / 60.0);
   al_register_event_source(queue, al_get_timer_event_source(timer));
   al_start_timer(timer);
   ALLEGRO_BITMAP* sprite = al_load_bitmap("./assets/chsprt.png");
@@ -154,35 +156,41 @@ int main(int argc, char *argv[]){
   al_clear_to_color(al_map_rgb(0, 0, 0));   
   al_draw_scaled_bitmap(fundo, 0, 0, 320, 200, 0, 0, 640, 480, 0);
   al_flip_display();
-while(true){
 
+while(true){
     ALLEGRO_EVENT event;
     al_wait_for_event(queue, &event);
-    
     if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){ 
       break;
     }
-    else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-      teclas[event.keyboard.keycode] = true;  
+    else if (event.type == ALLEGRO_EVENT_KEY_DOWN) { 
+      teclas[event.keyboard.keycode] = true;
+    }
+    else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP){
+      mainmenu(display, font, queue);
     }
     else if (event.type == ALLEGRO_EVENT_KEY_UP) {
       teclas[event.keyboard.keycode] = false; 
     }
     else if (event.type == ALLEGRO_EVENT_TIMER) {
       if (teclas[ALLEGRO_KEY_UP]) sprite_y -= velocidade;
-      if (teclas[ALLEGRO_KEY_DOWN]) sprite_y += velocidade;
       if (teclas[ALLEGRO_KEY_LEFT]) sprite_x -= velocidade;
       if (teclas[ALLEGRO_KEY_RIGHT]) sprite_x += velocidade;
       
       if (sprite_x < 0) sprite_x = 0;
-      if (sprite_y < 0) sprite_y = 0;
+      else if (sprite_x > 800 - al_get_bitmap_width(sprite)) sprite_x = 0;
+      if (sprite_y < 500 && (teclas[ALLEGRO_KEY_UP] == false)) sprite_y = 500;
+      else if (teclas[ALLEGRO_KEY_UP] == true){
+        sprite_y += -30;
+        velocidade ++;
+        teclas[ALLEGRO_KEY_UP] = false;
+      }      
       if (sprite_x > width - al_get_bitmap_width(sprite)) 
           sprite_x = width - al_get_bitmap_width(sprite);
       if (sprite_y > height - al_get_bitmap_height(sprite)) 
           sprite_y = height - al_get_bitmap_height(sprite);
 
-      //al_clear_to_color(al_map_rgb(255, 255, 255));
-      //al_draw_bitmap(fundo, 0, 0, 0);
+
       al_clear_to_color(al_map_rgb(0, 0, 0));   
       al_draw_scaled_bitmap(fundo, 0, 0, 400, 246, 0, 0, 800, 600, 0);
 
